@@ -1,0 +1,72 @@
+---
+title: "Assignment"
+format: html
+editor: visual
+---
+
+# Assessment 1
+
+```{r}
+# Yixin Ling
+# yl2212@cam.ac.uk
+# Assessment 1
+
+# Setup 
+
+# Load packages and data in this section
+
+library(tidyverse)
+library(janitor)
+street_crime <- read.csv("https://clanfear.github.io/ioc_iqa/_data/street_crime.csv")
+
+# 1
+# 1.1
+street_crime |> count(crime_type)         
+street_crime |> count(sex)    
+mean(street_crime$age)
+median(street_crime$sentence)
+
+# 1.2
+street_crime |> count(crime_type, sort = TRUE)
+
+# 1.3
+tabyl(street_crime, crime_type, sex)
+
+# 1.4
+model1 <- lm(sentence ~ crime_type + sex + age, data = street_crime)
+summary(model1)
+
+# 2
+# 2.1
+street_crime |>group_by(crime_type) |>summarise(mean_sentence = mean(sentence))
+
+# 2.2
+
+ggplot(street_crime, aes(x = sentence)) +geom_histogram(binwidth = 1, colour = "black", fill = "skyblue") +
+  labs(title = "Distribution of sentence length",x = "Sentence (months)",y = "Number of individuals")
+
+# 2.3
+crime_sex_table <- table(street_crime$crime_type,street_crime$sex)
+chisq.test(crime_sex_table)
+
+# 2.4
+summary(model1)
+
+# 3
+# 3.1
+ggplot(street_crime, aes(x = age, y = sentence)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Age and sentence length",
+    x = "Age at sentencing (years)",
+    y = "Sentence (months)"
+  )
+
+# 3.2
+predict(model1, newdata=data.frame(crime_type = factor("Assault"),sex = factor("Male"),age = 20))
+
+# 3.3
+summary(lm(sentence ~ sex,data = street_crime))
+
+```
